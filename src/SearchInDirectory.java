@@ -1,6 +1,7 @@
 import com.sun.deploy.security.SelectableSecurityManager;
 import sun.font.DelegatingShape;
 
+import javax.xml.crypto.dsig.spec.XSLTTransformParameterSpec;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -60,7 +61,10 @@ public class SearchInDirectory {
     //////////////////////////////////
     public static boolean searchWordByAND(String path, String test) throws IOException {
         List<String> SearchList = new ArrayList<>();
-        SearchList = Arrays.asList(test.split(" AND "));
+        String[] SearchArray = test.split(" AND ");
+        for (int i = 0; i < SearchArray.length; i++) {
+            SearchList.add(SearchArray[i]);
+        }
 
         try (BufferedReader in = new BufferedReader(new FileReader(path))) {
             String line;
