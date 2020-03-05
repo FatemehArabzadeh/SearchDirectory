@@ -24,10 +24,12 @@ public class SearchInDirectory {
             AllFilesPath.add(file.getPath());
         }
         for (int i = 0; i < AllFilesPath.size(); i++) {
-            if (test.contains(" AND "))
+            if (test.contains(" AND ") && !(test.contains(" OR ")))
                 b = searchWordByAND(AllFilesPath.get(i), test);
-            else if (test.contains(" OR "))
+            else if (test.contains(" OR ") && !(test.contains(" AND ")))
                 b = searchWordByOR(AllFilesPath.get(i), test);
+            else if (test.contains(" OR ") && test.contains(" AND "))
+                b = searchWordArithmetic(AllFilesPath.get(i), test);
             else
                 b = searchWord(AllFilesPath.get(i), test);
 
@@ -87,7 +89,7 @@ public class SearchInDirectory {
 
     /////////////////////////////////
     public static boolean searchWordByOR(String path, String test) throws IOException {
-        List<String> SearchList = new ArrayList<>();
+        List<String> SearchList;
         SearchList = Arrays.asList(test.split(" OR "));
         int CheckNumber = 0;
         try (BufferedReader in = new BufferedReader(new FileReader(path))) {
@@ -108,15 +110,30 @@ public class SearchInDirectory {
     }
 
     ////////////////////////////////
-    public static List<String> searchWordArithmetic(String path, String test) {
-        List<String> FileNames = new ArrayList<>();
-
-        return FileNames;
+    public static boolean searchWordArithmetic(String path, String test) throws IOException {
+        List<String> SearchList;
+        SearchList = Arrays.asList(test.split(" OR "));
+        int CheckNumber = 0;
+        try (BufferedReader in = new BufferedReader(new FileReader(path))) {
+            l:
+            while ((in.readLine()) != null) {
+                for (int i = 0; i < SearchList.size(); i++) {
+                    if (searchWordByAND(path, SearchList.get(i))) {
+                        CheckNumber = 1;
+                        break l;
+                    }
+                }
+            }
+            if (CheckNumber == 1)
+                return true;
+            else return false;
+        }
     }
 
     ////////////////////////////////
     public static boolean containsIgnoreCase(String str, String searchStr) {
-        if (str == null || searchStr == null) return false;
+        if (str == null || searchStr == null)
+            return false;
 
         final int length = searchStr.length();
         if (length == 0)
